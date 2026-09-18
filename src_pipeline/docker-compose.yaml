@@ -7,8 +7,10 @@ services:
     env_file:
     - .env
     depends_on:
-    - timescaledb
-    - mosquitto
+      timescaledb:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
 
   mosquitto:
     container_name: mosquitto
@@ -54,4 +56,3 @@ services:
 volumes:
   timescale_data:
   grafana_data:
-
