@@ -1,8 +1,13 @@
 import time
+import json
 from machine import Pin, PWM, freq
 from wifi import connect_wifi
+from umqtt.simple import MQTTClient
 
 time.sleep(0.1) 
+
+TOPIC = b"home/pico/hc-sr04"
+MQTT_BROKER = "10.253.75.1"
 
 
 trig =Pin(27, Pin.OUT)
@@ -18,6 +23,11 @@ pins = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
 led_pin = [Pin(I, Pin.OUT) for I in pins]
 total_led = len(led_pin)
 
+def connect_mqtt():
+    client = MQTTClient(client_id="pico", server = MQTT_BROKER, port=1883)
+    client.connect()
+    print("Connected to MQTT")
+    return client
 
 
 def echo_read_distance():
@@ -96,10 +106,17 @@ def bar_graf(distance):
 
 if __name__=="__main__":
     time.sleep(0.2)
+
     if connect_wifi():
         wifi_led.value(1)
+        client = connect_mqtt()
+    else:
+        print("Not connected to wifi")
 
     while True:
         distance = echo_read_distance()
         bar_graf(distance)
         buzzer(distance)
+
+        data = {"distance": distance}
+        client.publish(TOPIC, json.dumps(data))
