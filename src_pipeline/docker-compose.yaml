@@ -54,4 +54,3 @@ services:
 volumes:
   timescale_data:
   grafana_data:
-
