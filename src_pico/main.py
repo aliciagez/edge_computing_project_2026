@@ -1,5 +1,6 @@
 import time
 import json
+import machine
 from machine import Pin, PWM, freq
 from wifi import connect_wifi
 from umqtt.simple import MQTTClient
@@ -7,11 +8,13 @@ from umqtt.simple import MQTTClient
 time.sleep(0.1) 
 
 TOPIC = b"home/pico/hc-sr04"
-MQTT_BROKER = "10.253.75.1"
+MQTT_BROKER = "10.174.26.148"
 
 
 trig =Pin(27, Pin.OUT)
 echo =Pin(16, Pin.IN)
+
+
 time.sleep(0.1) 
 
 buzzer_pin=PWM(Pin(17))
@@ -28,29 +31,25 @@ def connect_mqtt():
     client.connect()
     print("Connected to MQTT")
     return client
-
+  
 
 def echo_read_distance():
     trig.value(0)
-    time.sleep_us(2)
+    time.sleep_us(5)
     trig.value(1)
     time.sleep_us(10)
     trig.value(0)
     print("trig skickad")
 
-    while echo.value() == 0:
-        start = time.ticks_us()
 
-    while echo.value() == 1:
-        end = time.ticks_us()
-
-    duration = time.ticks_diff(end, start)
-    distance = (duration * 0.0343) / 2
+    pulse = machine.time_pulse_us(echo, 1, 30000)
+    if pulse < 0:
+        return None
+    distance = (pulse / 2) / 29.1
 
     print(distance, "cm")
-    time.sleep(0.5)
-
     return distance
+    
 
 
 
@@ -107,7 +106,7 @@ def bar_graf(distance):
 if __name__=="__main__":
     time.sleep(0.2)
 
-    if connect_wifi():
+    if connect_wifi(30):
         wifi_led.value(1)
         client = connect_mqtt()
     else:
@@ -115,8 +114,11 @@ if __name__=="__main__":
 
     while True:
         distance = echo_read_distance()
-        bar_graf(distance)
-        buzzer(distance)
 
-        data = {"distance": distance}
-        client.publish(TOPIC, json.dumps(data))
+        if distance is not None:
+            bar_graf(distance)
+            buzzer(distance)
+
+            data = {"distance": distance}
+            client.publish(TOPIC, json.dumps(data))
+        time.sleep(1)
