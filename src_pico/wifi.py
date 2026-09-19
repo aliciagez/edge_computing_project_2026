@@ -5,12 +5,13 @@ import time
 
 rp2.country("SE")
 
-with open("wifi_credentials.json") as file:
+with open("wifi_cred.json") as file:
     credentials = json.load(file)
 
 def connect_wifi(waiting_time=10):
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
+    time.sleep(2)
     wlan.connect(credentials.get("SSID"), credentials.get("PASSWORD"))
     print(wlan)
 
