@@ -41,17 +41,16 @@ def echo_read_distance():
     trig.value(0)
     print("trig skickad")
 
-    try:
-        pulse = machine.time_pulse_us(echo, 1, 30000)
 
-        distance = (pulse / 2) / 29.1
-
-        print(distance, "cm")
-        return distance
-    
-    except OSError:
-        print("no echo")
+    pulse = machine.time_pulse_us(echo, 1, 30000)
+    if pulse < 0:
         return None
+    distance = (pulse / 2) / 29.1
+
+    print(distance, "cm")
+    return distance
+    
+
 
 
 def buzzer(distance):

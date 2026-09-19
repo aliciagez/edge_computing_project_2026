@@ -14,7 +14,7 @@ def on_message(client, userdata, message):
     query_db(
         """
         INSERT INTO distance_readings
-        (distance)
+        (time, distance)
         VALUES (NOW(), %s)
 """,
         (distance,),
