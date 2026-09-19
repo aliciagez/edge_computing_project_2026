@@ -8,23 +8,23 @@ rp2.country("SE")
 with open("wifi_cred.json") as file:
     credentials = json.load(file)
 
-def connect_wifi(waiting_time=30):
+def connect_wifi(waiting_time=10):
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    time.sleep(2)
-    wlan.connect(credentials.get("SSID"), credentials.get("PASSWORD"))
-    print(wlan)
 
-    # (device ip, subnet mask, router/gateway, DNS server)
-    print(f"{wlan.ifconfig()}")
+    if wlan.isconnected():
+        return True
+
+    wlan.connect(credentials.get("SSID"), credentials.get("PASSWORD"))
 
     while waiting_time > 0:
         if wlan.isconnected():
             print("Connected to wifi")
-            break
+            print(wlan.ifconfig())
+            return True
 
         waiting_time -= 1
         print("Trying to connect wifi, pls wait")
-        time.sleep(2)
+        time.sleep(1)
 
-    return wlan.isconnected()
+    return False

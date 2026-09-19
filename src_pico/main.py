@@ -121,4 +121,4 @@ if __name__=="__main__":
 
             data = {"distance": distance}
             client.publish(TOPIC, json.dumps(data))
-            time.sleep(1)
+        time.sleep(1)
