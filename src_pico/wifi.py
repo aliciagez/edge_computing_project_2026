@@ -11,6 +11,7 @@ with open("wifi_cred.json") as file:
 def connect_wifi(waiting_time=10):
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
+    wlan.config(pm=0xa11140)
 
     if wlan.isconnected():
         return True
@@ -22,6 +23,10 @@ def connect_wifi(waiting_time=10):
             print("Connected to wifi")
             print(wlan.ifconfig())
             return True
+
+        if waiting_time % 10 == 0:
+            print("Retrying connect...")
+            wlan.connect(credentials.get("SSID"), credentials.get("PASSWORD"))
 
         waiting_time -= 1
         print("Trying to connect wifi, pls wait")
