@@ -14,6 +14,7 @@ def connect_wifi(waiting_time=10):
     wlan.config(pm=0xa11140)
 
     if wlan.isconnected():
+        print("Connected to wifi")
         return True
 
     wlan.connect(credentials.get("SSID"), credentials.get("PASSWORD"))

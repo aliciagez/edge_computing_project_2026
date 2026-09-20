@@ -8,7 +8,7 @@ from umqtt.simple import MQTTClient
 time.sleep(0.1) 
 
 TOPIC = b"home/pico/hc-sr04"
-MQTT_BROKER = "10.174.26.148"
+MQTT_BROKER = "172.20.10.14"
 
 
 trig =Pin(27, Pin.OUT)
