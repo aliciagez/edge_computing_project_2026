@@ -1,3 +1,5 @@
+# From Kokchun's lectures 
+
 import socket
 import struct
 from binascii import hexlify

@@ -82,9 +82,6 @@ def buzzer(distance):
         buzzer_pin.duty_u16(0)
         time.sleep(0.8)
 
-        #for i in range(int(distance)):
-            #buzzer_pin.freq(330)
-            #buzzer_pin.duty_u16(100)         
 
 def bar_graf(distance):
     if distance <= 0 or distance >100:
